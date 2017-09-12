@@ -1,5 +1,18 @@
-# Directorio de trabajo
-setwd("C:/Users/Ramiro/Desktop")
+# Este script actualiza todos los registros de un objeto de Salesforce.
+# Antes de ejecutarlo, es necesario modificar los valores de la sección
+# 'Parámetros iniciales' con el fin de indicar el objeto que se quiere
+# actualizar, el campo que se actualizará y las credenciales de la cuenta
+# de Salesforce en la que se iniciará sesión.
+# 
+# No es necesario hacer ninguna modificación en la sección 'Actualización'.
+
+
+# Parametros iniciales ----------------------------------------------------
+
+# Parametros iniciales
+objeto <- "FMP_Diagnostic_TargetDefinition__c"
+campos <- c("Id", "Farm_Baseline__c")
+tamano_batch <- 40
 
 # Login a Salesforce
 library(RForcecom)
@@ -9,9 +22,13 @@ instanceURL <- "https://taroworks-8629.cloudforce.com/"
 apiVersion <- "36.0"
 session <- rforcecom.login(username, password, instanceURL, apiVersion)
 
+
+
+# Actualización -----------------------------------------------------------
+
+
 # Descargar archivos
-actualizar <- rforcecom.retrieve(session, "FMP_Diagnostic_TargetDefinition__c",
-                                 c("Id", "Farm_Baseline__c"))
+actualizar <- rforcecom.retrieve(session, objeto, campos)
 # # Datos de Prueba
 # saveRDS(actualizar, "actualizar.rds")
 # actualizar <- readRDS("actualizar.rds")
@@ -25,7 +42,7 @@ batches_info <- rforcecom.createBulkBatch(session,
                                           jobId=job_info$id, 
                                           actualizar, 
                                           multiBatch = TRUE, 
-                                          batchSize = 40)
+                                          batchSize = tamano_batch)
 
 # check on status of each batch
 batches_status <- lapply(batches_info, 
@@ -34,6 +51,12 @@ batches_status <- lapply(batches_info,
                                                           jobId=x$jobId, 
                                                           batchId=x$id)
                          })
+status <- c()
+for(i in 1:length(batches_status)) {
+      status[i] <- batches_status[[i]]$state
+}
+status
+
 # get details on each batch
 batches_detail <- lapply(batches_info, 
                          FUN=function(x){
