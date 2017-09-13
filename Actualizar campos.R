@@ -4,7 +4,11 @@
 # actualizar, el campo que se actualizará y las credenciales de la cuenta
 # de Salesforce en la que se iniciará sesión.
 # 
+<<<<<<< HEAD
 # No es necesario hacer ninguna modificación en la sección 'Actualización'.
+=======
+# No es necesario hacer ninguna modificación en la sección 'Actualización'
+>>>>>>> 7089bb6d9bf2986de78d25e3ba82f00adce01aa9
 
 
 # Parametros iniciales ----------------------------------------------------
