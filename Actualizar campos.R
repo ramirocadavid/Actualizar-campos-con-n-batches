@@ -52,10 +52,15 @@ batches_status <- lapply(batches_info,
                                                           batchId=x$id)
                          })
 status <- c()
+records.processed <- c()
+records.failed <- c()
 for(i in 1:length(batches_status)) {
       status[i] <- batches_status[[i]]$state
+      records.processed[i] <- batches_status[[i]]$numberRecordsProcessed
+      records.failed[i] <- batches_status[[i]]$numberRecordsFailed
 }
-status
+data.frame(status, records.processed, records.failed)
+
 
 # Detalles de cada batch
 batches_detail <- lapply(batches_info, 
